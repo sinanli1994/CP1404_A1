@@ -40,59 +40,58 @@ def main():
 def required():  # Function when user want to check the required items
     import operator
     # import the operator
-    file_reader = open("list.csv", "r")
-    # Open the file with the correct format
+    import csv
+    # import the csv file
+    file_opener = open("list.csv")
+    file_reader = csv.reader(file_opener)
+    # Open the file
     count = 0
     total = 0
 
     sorted_item = sorted(file_reader, key=operator.itemgetter(2))
     # sorting the file with the item 2
     for line in sorted_item:  # using for loop to separate to sorted file
-        item = str(line).split(",")  # separate to the different items
-        if "r" in item[3]:  # When "r" in item 3, then count, calculate and print the required items
+        if "r" in line[3]:  # When "r" in item 3, then count, calculate and print the required items
             count += 1
-            total += float(item[1])
+            total += float(line[1])
             if count == 1:
                 print("Required items:")
-                print("{}.{:40} $\t{:5}({})".format(count - 1, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count - 1, line[0], line[1], line[2], line[3]))
             else:
-                print("{}.{:40} $\t{:5}({})".format(count - 1, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count - 1, line[0], line[1], line[2], line[3]))
     if count == 0:  # If total count = 0, then means no required item
         print("No required items")
     else:  # Else print total price of required items
         print("Total expected price for {} items: ${}".format(count, total))
 
-    file_reader.close()
-    # Close the file
-
 
 def completed():  # Function when user want to check the completed items
     import operator
     # import the operator
-    file_reader = open("list.csv", "r")
-    # Open the file with the correct format
+    import csv
+    # import the csv file
+    file_opener = open("list.csv")
+    file_reader = csv.reader(file_opener)
+    # Open the file
     count = 0
     total = 0
 
     sorted_item = sorted(file_reader, key=operator.itemgetter(2))
     # sorting the file with the item 2
     for line in sorted_item:  # using for loop to separate to sorted file
-        item = str(line).split(",")  # separate to the different items
-        if "c" in item[3]:  # When "c" in item 3, then count, calculate and print the completed items
+        if "c" in line[3]:  # When "c" in item 3, then count, calculate and print the completed items
             count += 1
-            total += float(item[1])
+            total += float(line[1])
             if count == 1:
                 print("Completed items:")
-                print("{}.{:40} $\t{:5}({})".format(count - 1, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count - 1, line[0], line[1], line[2], line[3]))
             else:
-                print("{}.{:40} $\t{:5}({})".format(count - 1, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count - 1, line[0], line[1], line[2], line[3]))
     if count == 0:  # If total count = 0, then means no completed item
         print("No completed items")
     else:
         print("Total expected price for {} items: ${}".format(count, total))
-    # Else print total price of completed items
-    file_reader.close()
-    # Close the file
+        # Else print total price of completed items
 
 
 def add_new():  # Function when user want to add new item
@@ -135,32 +134,34 @@ def add_new():  # Function when user want to add new item
 
 
 def mark():  # Function when user want to mark the required item to completed item
-    file_reader = open("list.csv", "r")
+    import operator
+    # import the operator
+    import csv
+    # import the csv file
+    file_opener = open("list.csv")
+    file_reader = csv.reader(file_opener)
     file_writer = open("list.csv", "a")
-    # Open the file with the correct format
+    # Open the file
     count = -1
     count1 = -1
     total = 0
 
-    import operator
-    # import the operator
     sorted_item = sorted(file_reader, key=operator.itemgetter(2))
     # sorting the file with the item 2
 
     for line in sorted_item:  # using for loop to separate to sorted file
-        item = str(line).split(",")  # separate to the different items
-        if "r" in item[3]:  # When "r" in item 3, then count, calculate and print the required items
+        if "r" in line[3]:  # When "r" in item 3, then count, calculate and print the required items
             count += 1
-            total += float(item[1])
+            total += float(line[1])
             if count == 0:
                 print("Required items:")
-                print("{}.{:40} $\t{:5}({})".format(count, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count, line[0], line[1], line[2], line[3]))
             else:
-                print("{}.{:40} $\t{:5}({})".format(count, item[0], item[1], item[2], item[3]))
+                print("{}.{:40} $\t{:5}({})".format(count, line[0], line[1], line[2], line[3]))
     if count == -1:  # If total count = 0, then means no required item
         print("No required items")
     else:  # Else print total price of required items
-        print("Total expected price for {} items: ${}".format(count, total))
+        print("Total expected price for {} items: ${}".format(count + 1, total))
         print("Enter the number of an item to mark as completed")
         while True:
             try:  # Let user enter the item number which user want to mark as completed item
@@ -169,25 +170,22 @@ def mark():  # Function when user want to mark the required item to completed it
                 print("Invalid input; enter a number")
             else:
                 if count >= user_input >= 0:
-                    file_reader.seek(0)
-                    for line2 in sorted_item:  # Find the number and change the key words
-                        item2 = str(line2).split(",")
-                        if "r" in item2[3]:
+                    for line2 in sorted_item:  # Find the number and rewrite the items in the file and print the completed item
+                        if "r" in line2[3]:
                             count1 += 1
                             if count1 == user_input:
                                 file_writer2 = open("list.csv", "w")
-                                file_writer2.writelines(line2.replace(item2[3], "c").strip())
-                                print("{} marked as completed".format(item2[0]))
+                                file_writer2.writelines(line2[0] + "," + line2[1] + "," + line2[2] + "," + "c")
+                                print("{} marked as completed".format(line2[0]))
                                 file_writer2.close()
                             else:
-                                file_writer.writelines("\n" + line2.strip())
+                                file_writer.writelines("\n" + line2[0] + "," + line2[1] + "," + line2[2] + "," + line2[3])
                         else:
-                            file_writer.writelines("\n" + line2.strip())
+                            file_writer.writelines("\n" + line2[0] + "," + line2[1] + "," + line2[2] + "," + line2[3])
                     break
                 else:
                     print("Invalid item number")
                     # Error check
-    file_reader.close()
     file_writer.close()
     # Close the file
 
@@ -212,9 +210,10 @@ def quit():  # Function when user want to quit
             file_writer.writelines(line.replace(line, "").strip())
 
     print("{} items saved to items.csv".format(count))
-    #Display how many items which add to the file
+    # Display how many items which add to the file
     file_reader.close()
     file_writer.close()
-    #Close the file
+    # Close the file
+
 
 main()
